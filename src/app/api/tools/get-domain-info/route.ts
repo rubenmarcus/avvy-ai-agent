@@ -66,7 +66,7 @@ export async function GET(request: Request) {
         }
       } catch (error) {
         // Skip records that don't exist
-        return NextResponse.json({ error: 'Failed to fetch domain info' }, { status: 500 });
+        return NextResponse.json({ error: `Failed to fetch domain info ${error}` }, { status: 500 });
       }
     }
 
