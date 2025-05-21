@@ -1,4 +1,3 @@
-import { ACCOUNT_ID, PLUGIN_URL } from "@/app/config";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -11,11 +10,11 @@ export async function GET() {
         },
         servers: [
             {
-                url: PLUGIN_URL,
+                url: 'https://avvy-ai-agent.vercel.app',
             },
         ],
         "x-mb": {
-            "account-id": ACCOUNT_ID,
+            "account-id": 'rubenmarcus.avax',
             assistant: {
                 name: "Avvy Domains Agent",
                 description: "An assistant that helps manage Avvy domain names on the Avalanche blockchain, including registration, renewal, transfers, and auction participation.",
@@ -47,6 +46,7 @@ export async function GET() {
                 tools: [{ type: "generate-evm-tx" }],
                 categories: ["web3", "domains", "identity"],
                 chainIds: [43114],
+                image: 'https://avvy-ai-agent.vercel.app/logo.png',
             },
         },
         paths: {

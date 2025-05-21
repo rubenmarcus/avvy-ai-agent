@@ -1,7 +1,6 @@
-import { DEPLOYMENT_URL } from "vercel-url";
 
 // App configuration
-export const ACCOUNT_ID = process.env.ACCOUNT_ID || 'avvy-domains-agent.eth';
+export const ACCOUNT_ID = process.env.ACCOUNT_ID;
 export const PLUGIN_URL = process.env.PLUGIN_URL || 'https://avvy-domains-agent.vercel.app';
 
 // Blockchain configuration

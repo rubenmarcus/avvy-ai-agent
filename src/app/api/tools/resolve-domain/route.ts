@@ -4,10 +4,6 @@ import { createPublicClient, http } from 'viem';
 import { avalanche } from 'viem/chains';
 import { API_RPC_URL } from '@/app/config';
 
-// Create a type-safe record map
-interface AvvyRecordMapping {
-  [key: string]: string | { [key: string]: string };
-}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -46,8 +42,6 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Custom record not found' }, { status: 404 });
       }
     } else {
-      // Standard record resolution
-      const recordTypeKey = recordType as keyof typeof avvy.constants.RECORDS;
 
       try {
         value = await avvy.resolve(domainName, recordType);

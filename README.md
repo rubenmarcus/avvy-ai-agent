@@ -1,96 +1,165 @@
-# Bitte AI Agent NextJS Template
+# Avvy Domains AI Agent
 
-This template provides a starting point for creating AI agents using the Bitte Protocol with Next.js. It includes pre-configured endpoints and tools that demonstrate common agent functionalities.
 
-## Features
 
-- 🤖 Pre-configured AI agent setup
-- 🛠️ Built-in tools and endpoints:
-  - Blockchain information retrieval
-  - NEAR transaction generation
-  - Reddit frontpage fetching
-  - Twitter share intent generation
-  - Coin flip functionality
-- ⚡ Next.js 14 with App Router
-- 🎨 Tailwind CSS for styling
-- 📝 TypeScript support
-- 🔄 Hot reload development environment
+## API Reference
 
-## Quick Start
+### Resolve Domain
+Resolves an Avalanche domain name to its associated records.
 
-1. Clone this repository
-2. Configure environment variables (create a `.env` or `.env.local` file)
+**Endpoint:** `/api/tools/resolve-domain`
 
-```bash
-# Get your API key from https://key.bitte.ai
-BITTE_API_KEY='your-api-key'
+**Method:** GET
 
-ACCOUNT_ID='your-account.near'
+**Parameters:**
+- `domainName` (required): The domain name to resolve (with or without .avax extension)
+- `recordType` (optional): Type of record to resolve (default: 'EVM')
+- `customKey` (optional): Custom record key when recordType is 'CUSTOM'
+
+**Response:**
+```json
+{
+  "domainName": "example.avax",
+  "recordType": "EVM",
+  "value": "0x1234567890123456789012345678901234567890"
+}
 ```
 
-3. Install dependencies:
+**Prompt Examples:**
+1. "What is the EVM address associated with satoshi.avax?"
+2. "Find the avatar record for vitalik.avax domain"
+3. "Resolve the custom Twitter handle record for sergey.avax"
 
-```bash
-pnpm install
+### Calculate Price
+Calculates the price for registering or renewing an Avalanche domain name.
+
+**Endpoint:** `/api/tools/calculate-price`
+
+**Method:** GET
+
+**Parameters:**
+- `domainName` (required): The domain name without .avax extension
+- `years` (required): Number of years for registration/renewal
+
+**Response:**
+```json
+{
+  "domainName": "example.avax",
+  "priceUSD": 25,
+  "priceAVAX": "1.2500",
+  "years": 5
+}
 ```
 
-4. Start the development server:
+**Prompt Examples:**
+1. "How much does it cost to register crypto.avax for 3 years?"
+2. "Calculate the price of a 4-character Avalanche domain for 2 years"
+3. "What would I pay in AVAX to register blockchain.avax for 1 year?"
 
-```bash
-pnpm run dev
+### Get Domain Info
+Retrieves information about an Avalanche domain, including availability, expiry, and owner.
+
+**Endpoint:** `/api/tools/get-domain-info`
+
+**Method:** GET
+
+**Parameters:**
+- `domainName` (required): The domain name without .avax extension
+
+**Response:**
+```json
+{
+  "domainName": "example.avax",
+  "available": false,
+  "expiryDate": "2025-01-01T00:00:00Z",
+  "owner": "0x1234567890123456789012345678901234567890",
+  "records": {
+    "EVM": "0x1234567890123456789012345678901234567890",
+    "AVATAR": "https://example.com/avatar.png"
+  }
+}
 ```
 
-This will:
+**Prompt Examples:**
+1. "Is avalanche.avax domain available for registration?"
+2. "When does my defi.avax domain expire?"
+3. "Who owns the blockchain.avax domain name?"
 
-- Start your Next.js application
-- Launch make-agent
-- Prompt you to sign a message in Bitte wallet to create an API key
-- Launch your agent in the Bitte playground
-- Allow you to freely edit and develop your code in the playground environment
+### Create Renewal Transaction
+Creates a transaction to renew an existing Avalanche domain.
 
-5. Build the project locally:
+**Endpoint:** `/api/tools/create-renewal-tx`
 
-```bash
-pnpm run build:dev
+**Method:** GET
+
+**Parameters:**
+- `domainName` (required): The domain name without .avax extension
+- `years` (required): Number of years to renew
+
+**Response:**
+```json
+{
+  "transaction": {
+    "chainId": 43114,
+    "metaTransactions": [{
+      "to": "0x5BBD3a8E215B1fC30595fd1Aba4F3FcDbB614078",
+      "data": "0x...",
+      "value": "1250000000000000000"
+    }]
+  },
+  "meta": {
+    "domainName": "example.avax",
+    "priceUSD": 25,
+    "avaxPrice": 20,
+    "priceAVAX": "1.2500",
+    "newExpiryDate": "2026-01-01T00:00:00Z"
+  }
+}
 ```
 
-This will build the project and not trigger `make-agent deploy`
+**Prompt Examples:**
+1. "Create a transaction to renew my crypto.avax domain for 2 more years"
+2. "I need to extend my avalanche.avax domain registration by 1 year"
+3. "Generate a renewal transaction for my defi.avax domain for 5 years"
 
-- using just `build` will trigger make-agent deploy and not work unless you provide your deployed plugin url using the `-u` flag.
+### Create Registration Transaction
+Creates a transaction to register a new Avalanche domain.
 
-## Available Tools
+**Endpoint:** `/api/tools/create-registration-tx`
 
-The template includes several pre-built tools:
+**Method:** GET
 
-### 1. Blockchain Information
+**Parameters:**
+- `domainName` (required): The domain name without .avax extension
+- `years` (required): Number of years for registration
+- `enhancedPrivacy` (optional): Enable enhanced privacy protection (true/false)
 
-- Endpoint: `/api/tools/get-blockchains`
-- Returns a randomized list of blockchain networks
+**Response:**
+```json
+{
+  "transaction": {
+    "chainId": 43114,
+    "metaTransactions": [{
+      "to": "0x5BBD3a8E215B1fC30595fd1Aba4F3FcDbB614078",
+      "data": "0x...",
+      "value": "1250000000000000000"
+    }]
+  },
+  "meta": {
+    "domainName": "example.avax",
+    "priceUSD": 25,
+    "priceAVAX": "1.2500",
+    "currentAvaxPriceUSD": 20,
+    "expiryDate": "2024-01-01T00:00:00Z",
+    "enhancedPrivacy": false
+  }
+}
+```
 
-### 2. NEAR Transaction Generator
-
-- Endpoint: `/api/tools/create-near-transaction`
-- Creates NEAR transaction payloads for token transfers
-
-### 3. EVM Transaction Generator
-
-- Endpoint: `/api/tools/create-evm-transaction`
-- Creates EVM transaction payloads for native eth transfers
-
-### 4. Twitter Share
-
-- Endpoint: `/api/tools/twitter`
-- Generates Twitter share intent URLs
-
-### 5. Coin Flip
-
-- Endpoint: `/api/tools/coinflip`
-- Simple random coin flip generator
-
-### 6. Get User
-
-- Endpoint: `/api/tools/get-user`
-- Returns the user's account ID
+**Prompt Examples:**
+1. "I want to register avalanche.avax for 3 years, create a transaction for me"
+2. "Generate a transaction to buy crypto.avax domain with enhanced privacy for 1 year"
+3. "Help me register a 5-character domain for 2 years on Avalanche"
 
 ## AI Agent Configuration
 
